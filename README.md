@@ -9,6 +9,15 @@ A full-stack real-time doubt resolution platform with a first-accept locking sys
 - Status flow: OPEN → MATCHED  
 - Real-time private chat between user and guide  
 - Responsive UI using React
+  
+## 🧠 How It Works
+
+- Users create doubts which are stored in the database  
+- Doubts are marked as **OPEN** and visible to all guides  
+- When a guide accepts a doubt, a locking mechanism ensures only one guide is assigned  
+- The doubt status updates to **MATCHED**  
+- A real-time chat (via Socket.IO) is established between the user and the guide  
+- Communication continues until the doubt is resolved  
 
 ## 📁 Project Structure
 
@@ -21,13 +30,12 @@ A full-stack real-time doubt resolution platform with a first-accept locking sys
 Kausalya Hariharan
 Mallika
 Anuhya
+## 🚀 My Contributions
 
-## 🚀 My Contribution
-
-- Built full-stack doubt resolution platform  
-- Implemented first-accept system  
-- Integrated MongoDB with backend APIs  
-- Designed responsive UI using React
+- Contributed to building the full-stack doubt resolution platform  
+- Implemented the first-accept locking system  
+- Worked on MongoDB integration with backend APIs  
+- Designed parts of the responsive UI using React  
 
 ## 📸 Screenshots
 
@@ -64,7 +72,7 @@ Other:
 ## ⚙️ Installation
 
 1. Clone the repository:
-git clone https://github.com/your-username/doubtsphere.git
+git clone repo:CSI-VITAP-Skill-Builders/syntax-surgeons 
 
 2. Navigate to project folder:
 cd doubtsphere
