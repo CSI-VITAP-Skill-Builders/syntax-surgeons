@@ -72,7 +72,7 @@ Other:
 ## ⚙️ Installation
 
 1. Clone the repository:
-git clone repo:CSI-VITAP-Skill-Builders/syntax-surgeons 
+git clone repo:(https://github.com/CSI-VITAP-Skill-Builders/syntax-surgeons.git)
 
 2. Navigate to project folder:
 cd doubtsphere
