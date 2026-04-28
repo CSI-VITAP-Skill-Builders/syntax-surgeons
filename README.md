@@ -49,7 +49,7 @@ Anuhya
 ![Accept](./screenshots/hold.png)
 
 ### Private Chat
-![Private Chat](./screenshots/private%20char.jpeg)
+![Private Chat](./screenshots/private%20chat.jpeg)
 
 ## 🎥 Demo Video
 
@@ -75,7 +75,7 @@ Other:
 ## ⚙️ Installation
 
 1. Clone the repository:
-git clone repo:(https://github.com/CSI-VITAP-Skill-Builders/syntax-surgeons.git)
+git clone https://github.com/CSI-VITAP-Skill-Builders/syntax-surgeons.git
 
 2. Navigate to project folder:
 cd doubtsphere
