@@ -27,9 +27,11 @@ A full-stack real-time doubt resolution platform with a first-accept locking sys
 
 ## 👩‍💻 Developed By
 
--Mallika Koppuravuri
--Kausalya Hariharan
--Anuhya
+- Mallika Koppuravuri – Frontend  
+
+- Kausalya Hariharan – Backend & Realtime  
+
+- Anuhya – UI/UX  
 
 ## 🚀 My Contributions
 
