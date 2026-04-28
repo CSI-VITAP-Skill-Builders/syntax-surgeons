@@ -27,8 +27,8 @@ A full-stack real-time doubt resolution platform with a first-accept locking sys
 
 ## 👩‍💻 Developed By
 
+-Mallika Koppuravuri
 -Kausalya Hariharan
--Mallika
 -Anuhya
 
 ## 🚀 My Contributions
