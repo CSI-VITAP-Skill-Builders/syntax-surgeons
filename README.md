@@ -48,6 +48,9 @@ Anuhya
 ### Accept Flow
 ![Accept](./screenshots/hold.png)
 
+### Private Chat
+![Private Chat](./screenshots/private%20char.jpeg)
+
 ## 🎥 Demo Video
 
 [▶ Watch Demo](https://drive.google.com/file/d/1PgDv9Oz2yKwh49RxeBBeTeSXZENmJ4MH/view?usp=sharing)
