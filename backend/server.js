@@ -1,21 +1,25 @@
-const mongoose = require("mongoose");
 const express = require("express");
+const mongoose = require("mongoose");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
+const server = http.createServer(app);
 
-/* -------------------------
-   MIDDLEWARE (MUST BE TOP)
---------------------------*/
-mongoose.connect("mongodb://127.0.0.1:27017/doubtsphere")
-  .then(() => console.log("MongoDB connected ✅"))
-  .catch(err => console.log(err));
+const io = new Server(server, {
+  cors: { origin: "*" }
+});
+
 app.use(cors());
 app.use(express.json());
 
-/* -------------------------
-   IN-MEMORY STORAGE
---------------------------*/
+/* ---------- DB ---------- */
+mongoose.connect("mongodb://127.0.0.1:27017/doubtsphere")
+  .then(() => console.log("MongoDB connected ✅"))
+  .catch(err => console.log(err));
+
+/* ---------- SCHEMAS ---------- */
 const doubtSchema = new mongoose.Schema({
   title: String,
   description: String,
@@ -23,95 +27,89 @@ const doubtSchema = new mongoose.Schema({
   acceptedBy: { type: String, default: null }
 });
 
+const messageSchema = new mongoose.Schema({
+  roomId: String,
+  sender: String,
+  message: String,
+  time: String
+});
+
 const Doubt = mongoose.model("Doubt", doubtSchema);
+const Message = mongoose.model("Message", messageSchema);
 
-/* -------------------------
-   TEST ROUTE
---------------------------*/
-app.get("/", (req, res) => {
-  res.send("Server running 🚀");
-});
+/* ---------- ROUTES ---------- */
+app.get("/", (req, res) => res.send("Server running 🚀"));
 
-/* -------------------------
-   CREATE DOUBT
---------------------------*/
 app.post("/doubt", async (req, res) => {
-  const { title, description } = req.body;
-
-  const newDoubt = await Doubt.create({
-    title,
-    description
-  });
-
-  res.json(newDoubt);
+  const doubt = await Doubt.create(req.body);
+  res.json(doubt);
 });
 
-/* -------------------------
-   GET ALL DOUBTS
---------------------------*/
 app.get("/doubts", async (req, res) => {
-  try {
-    const doubts = await Doubt.find();
-    res.json(doubts);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const doubts = await Doubt.find();
+  res.json(doubts);
 });
 
-/* -------------------------
-   UPDATE DOUBT
---------------------------*/
-app.put("/doubt/:id", async (req, res) => {
-  const updated = await Doubt.findByIdAndUpdate(
-    req.params.id,
-    req.body,
+app.post("/accept-doubt", async (req, res) => {
+  const { doubtId, userId } = req.body;
+
+  const updated = await Doubt.findOneAndUpdate(
+    { _id: doubtId, status: "OPEN" },
+    { status: "MATCHED", acceptedBy: userId },
     { new: true }
   );
+
+  if (!updated) return res.status(400).json({ error: "Already accepted" });
 
   res.json(updated);
 });
 
-/* -------------------------
-   ACCEPT DOUBT (CORE FEATURE)
---------------------------*/
-app.post("/accept-doubt", async (req, res) => {
-  const { doubtId, userId } = req.body;
-
-  try {
-    const updated = await Doubt.findOneAndUpdate(
-      {
-        _id: doubtId,
-        status: "OPEN"   // 🔥 KEY CONDITION
-      },
-      {
-        status: "MATCHED",
-        acceptedBy: userId
-      },
-      { new: true }
-    );
-
-    if (!updated) {
-      return res.status(400).json({ error: "Already accepted" });
-    }
-
-    res.json(updated);
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-/* -------------------------
-   DELETE DOUBT
---------------------------*/
 app.delete("/doubt/:id", async (req, res) => {
-  const deleted = await Doubt.findByIdAndDelete(req.params.id);
-  res.json(deleted);
+  await Doubt.findByIdAndDelete(req.params.id);
+  res.json({ msg: "Deleted" });
 });
 
-/* -------------------------
-   START SERVER
---------------------------*/
-app.listen(5001, () => {
-  console.log("Server running on port 5001");
+/* ---------- MESSAGES ---------- */
+app.get("/messages/:roomId", async (req, res) => {
+  const msgs = await Message.find({ roomId: req.params.roomId });
+  res.json(msgs);
+});
+
+/* ---------- SOCKET ---------- */
+io.on("connection", (socket) => {
+
+  /* ---------- JOIN ROOM ---------- */
+  socket.on("join_room", (roomId) => {
+    socket.join(roomId);
+
+    // notify other user
+    socket.to(roomId).emit("user_connected");
+  });
+
+  /* ---------- SEND MESSAGE ---------- */
+  socket.on("send_message", async (data) => {
+    await Message.create(data);
+    io.to(data.roomId).emit("receive_message", data);
+  });
+
+  /* ---------- TYPING ---------- */
+  socket.on("typing", (user) => {
+    socket.broadcast.emit("typing", user);
+  });
+
+  /* ---------- SEEN ---------- */
+  socket.on("message_seen", (roomId) => {
+    socket.to(roomId).emit("seen");
+  });
+
+  /* ---------- DISCONNECT ---------- */
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("user_disconnected");
+  });
+
+});
+
+/* ---------- START ---------- */
+server.listen(5001, () => {
+  console.log("Server running on 5001 🚀");
 });
