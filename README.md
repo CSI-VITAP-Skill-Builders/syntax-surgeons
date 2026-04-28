@@ -27,9 +27,10 @@ A full-stack real-time doubt resolution platform with a first-accept locking sys
 
 ## 👩‍💻 Developed By
 
-Kausalya Hariharan
-Mallika
-Anuhya
+-Kausalya Hariharan
+-Mallika
+-Anuhya
+
 ## 🚀 My Contributions
 
 - Contributed to building the full-stack doubt resolution platform  
